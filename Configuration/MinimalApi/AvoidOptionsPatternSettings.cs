@@ -2,6 +2,6 @@ namespace MinimalApi
 {
     public class AvoidOptionsPatternSettings
     {
-        public bool PrintSpecializedMessage { get; set; }
+        public string? SpecializedMessage { get; set; }
     }
 }

@@ -3,6 +3,8 @@ using MinimalApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.SetupAppConfiguration();
+
 //Binding using IOptions pattern
 builder.Services.Configure<OptionsPatternSettings>(builder.Configuration.GetSection("OptionsPatternSettings"));
 
@@ -12,23 +14,20 @@ builder.Services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<A
 
 var app = builder.Build();
 
-//Binding using IOptions pattern
+// POINT 1:
+// Binding using IOptions pattern
 app.MapGet("/OptionsPattern", (IOptions<OptionsPatternSettings> options) =>
 {
     OptionsPatternSettings optionsPatternSettings = options.Value;
-    if(optionsPatternSettings.PrintSpecializedMessage)
-        return "Hello Sid";
-    else
-        return "Hello all";
+    return optionsPatternSettings.SpecializedMessage;
 });
 
-//Avoiding IOption dependency in constructor
+// POINT 2:
+// Avoiding IOption dependency in constructor.
+// Fetching settings from appsettings.json based on environment
 app.MapGet("/AvoidOptionsPattern", (AvoidOptionsPatternSettings avoidOptionsPatternSettings) =>
 {
-    if(avoidOptionsPatternSettings.PrintSpecializedMessage)
-        return "Hello Sid";
-    else
-        return "Hello all";
+    return avoidOptionsPatternSettings.SpecializedMessage;
 });
 
 app.Run();
